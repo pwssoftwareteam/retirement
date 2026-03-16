@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Retirement Celebration</title>
+
+<style>
+
+body{
+margin:0;
+font-family:"Segoe UI",Arial;
+background:linear-gradient(120deg,#eef2ff,#fdfbff);
+overflow-x:hidden;
+text-align:center;
+}
+
+h1{
+margin-top:40px;
+color:#5b6cff;
+font-size:38px;
+}
+
+.subtitle{
+color:#777;
+margin-bottom:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+.input-box{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 6px 16px rgba(0,0,0,0.15);
+margin-bottom:30px;
+}
+
+input,textarea{
+width:90%;
+padding:10px;
+margin:8px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+background:#5b6cff;
+color:white;
+border:none;
+padding:12px 25px;
+border-radius:20px;
+font-size:14px;
+cursor:pointer;
+}
+
+button:hover{
+background:#4854e8;
+}
+
+.wall{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:15px;
+}
+
+.card{
+background:white;
+padding:18px;
+border-radius:14px;
+box-shadow:0 6px 12px rgba(0,0,0,0.15);
+text-align:left;
+animation:fadeIn .6s;
+}
+
+.card-name{
+font-weight:bold;
+margin-bottom:6px;
+color:#444;
+}
+
+.card-msg{
+color:#666;
+line-height:1.4;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.balloon{
+position:absolute;
+bottom:-100px;
+width:40px;
+height:50px;
+background:#ff6b6b;
+border-radius:50%;
+animation:float 12s infinite ease-in;
+opacity:.6;
+}
+
+.balloon:nth-child(2){background:#ffd93d;left:20%;}
+.balloon:nth-child(3){background:#6bcB77;left:40%;}
+.balloon:nth-child(4){background:#4d96ff;left:60%;}
+.balloon:nth-child(5){background:#ff9f9f;left:80%;}
+
+@keyframes float{
+0%{transform:translateY(0);}
+100%{transform:translateY(-120vh);}
+}
+
+.footer{
+margin:50px 0;
+color:#aaa;
+font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+
+<h1>🎉 Happy Retirement 🎉</h1>
+<div class="subtitle">Leave your wishes for our amazing leader</div>
+
+<div class="container">
+
+<div class="input-box">
+
+<input id="name" placeholder="Your Name">
+
+<br>
+
+<textarea id="message" rows="3" placeholder="Write your retirement wishes..."></textarea>
+
+<br>
+
+<button onclick="sendMessage()">Send Wishes</button>
+
+</div>
+
+<div id="wall" class="wall"></div>
+
+</div>
+
+<div class="footer">
+Made with ❤️ by the team
+</div>
+
+<script>
+
+const API_URL="https://script.google.com/macros/s/AKfycbyE0fpoCNP-wHHOfv1qTVI_v2yxxPR_3Vw6YZ5hEiZw9nM2sPUUgP0ZBUOzJ3NsKR8BgQ/exec";
+
+async function sendMessage(){
+
+const name=document.getElementById("name").value;
+const message=document.getElementById("message").value;
+
+if(!name||!message){
+alert("Please enter name and message");
+return;
+}
+
+await fetch(API_URL,{
+method:"POST",
+body:new URLSearchParams({
+name:name,
+message:message
+})
+});
+
+document.getElementById("name").value="";
+document.getElementById("message").value="";
+
+loadMessages();
+
+}
+
+async function loadMessages(){
+
+const res=await fetch(API_URL);
+const data=await res.json();
+
+const wall=document.getElementById("wall");
+wall.innerHTML="";
+
+for(let i=data.length-1;i>0;i--){
+
+const name=data[i][0];
+const message=data[i][1];
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=
+"<div class='card-name'>"+name+"</div>"+
+"<div class='card-msg'>"+message+"</div>";
+
+wall.appendChild(card);
+
+}
+
+}
+
+loadMessages();
+
+setInterval(loadMessages,8000);
+
+</script>
+
+</body>
+</html>
