@@ -7,7 +7,6 @@
 <title>Retirement Celebration</title>
 
 <style>
-
 body{
 margin:0;
 font-family:"Segoe UI",Arial;
@@ -116,12 +115,30 @@ opacity:.6;
 100%{transform:translateY(-120vh);}
 }
 
+#successMsg{
+display:none;
+background:#6bcB77;
+color:white;
+padding:12px 20px;
+border-radius:10px;
+margin-top:15px;
+font-weight:bold;
+}
+
+.confetti{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+}
+
 .footer{
 margin:50px 0;
 color:#aaa;
 font-size:12px;
 }
-
 </style>
 </head>
 
@@ -150,6 +167,9 @@ font-size:12px;
 
 <button onclick="sendMessage()">Send Wishes</button>
 
+<div id="successMsg">🎉 Wish sent successfully!</div>
+<canvas id="confetti" class="confetti"></canvas>
+
 </div>
 
 <div id="wall" class="wall"></div>
@@ -161,7 +181,6 @@ Made with ❤️ by the team
 </div>
 
 <script>
-
 const API_URL="https://script.google.com/macros/s/AKfycbyE0fpoCNP-wHHOfv1qTVI_v2yxxPR_3Vw6YZ5hEiZw9nM2sPUUgP0ZBUOzJ3NsKR8BgQ/exec";
 
 async function sendMessage(){
@@ -176,6 +195,7 @@ return;
 
 await fetch(API_URL,{
 method:"POST",
+mode:"no-cors",
 body:new URLSearchParams({
 name:name,
 message:message
@@ -184,6 +204,14 @@ message:message
 
 document.getElementById("name").value="";
 document.getElementById("message").value="";
+
+document.getElementById("successMsg").style.display="block";
+
+launchConfetti();
+
+setTimeout(()=>{
+document.getElementById("successMsg").style.display="none";
+},3000);
 
 loadMessages();
 
@@ -216,9 +244,46 @@ wall.appendChild(card);
 }
 
 loadMessages();
-
 setInterval(loadMessages,8000);
 
+function launchConfetti(){
+
+const canvas=document.getElementById("confetti");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let pieces=[];
+
+for(let i=0;i<120;i++){
+pieces.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*6+4,
+speed:Math.random()*3+2
+});
+}
+
+let frame=0;
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+pieces.forEach(p=>{
+ctx.fillStyle=`hsl(${Math.random()*360},80%,60%)`;
+ctx.fillRect(p.x,p.y,p.size,p.size);
+p.y+=p.speed;
+if(p.y>canvas.height)p.y=0;
+});
+
+frame++;
+if(frame<120)requestAnimationFrame(draw);
+}
+
+draw();
+}
 </script>
 
 </body>
