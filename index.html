@@ -1,24 +1,88 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>退休祝福牆</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Retirement Wish Wall</title>
+
+<style>
+body{
+font-family: Arial;
+background:#f4f6fb;
+text-align:center;
+padding:40px;
+}
+
+.card{
+background:white;
+padding:15px;
+margin:10px auto;
+width:300px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+</style>
+
 </head>
+
 <body>
 
-  <h1>🎉 退休祝福牆 🎉</h1>
+<h1>🎉 Retirement Wish Wall 🎉</h1>
 
-  <div class="input-area">
-    <input type="text" id="name" placeholder="你的名字">
-    <textarea id="message" placeholder="輸入祝福語"></textarea>
-    <button id="sendBtn">送出祝福</button>
-  </div>
+<input id="name" placeholder="Your Name"><br><br>
 
-  <div class="wall" id="wall"></div>
+<textarea id="message" placeholder="Write your wish"></textarea><br><br>
 
-  <script src="js/app.js"></script>
+<button onclick="sendMessage()">Send</button>
+
+<hr>
+
+<div id="wall"></div>
+
+<script>
+
+const API_URL="https://script.google.com/macros/s/AKfycbyE0fpoCNP-wHHOfv1qTVI_v2yxxPR_3Vw6YZ5hEiZw9nM2sPUUgP0ZBUOzJ3NsKR8BgQ/exec";
+
+async function sendMessage(){
+
+const name=document.getElementById("name").value;
+const message=document.getElementById("message").value;
+
+await fetch(API_URL,{
+method:"POST",
+body:new URLSearchParams({
+name:name,
+message:message
+})
+});
+
+loadMessages();
+
+}
+
+async function loadMessages(){
+
+const res=await fetch(API_URL);
+const data=await res.json();
+
+const wall=document.getElementById("wall");
+wall.innerHTML="";
+
+for(let i=1;i<data.length;i++){
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML="<b>"+data[i][0]+"</b><br>"+data[i][1];
+
+wall.appendChild(card);
+
+}
+
+}
+
+loadMessages();
+
+</script>
+
 </body>
 </html>
