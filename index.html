@@ -4,102 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>退休祝福牆</title>
+  <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #fef9ff, #f0f7ff);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    h1 {
-      margin: 30px 0 10px;
-      color: #ff6b6b;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-    }
-    .input-area {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    input, textarea {
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      outline: none;
-    }
-    textarea {
-      resize: none;
-      width: 250px;
-      height: 60px;
-    }
-    button {
-      padding: 10px 20px;
-      border-radius: 10px;
-      border: none;
-      background: #ff6b6b;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #ff4757;
-    }
-    .wall {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      width: 90%;
-      max-width: 800px;
-    }
-    .card {
-      background: white;
-      padding: 15px 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      max-width: 300px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeIn 0.5s forwards;
-      position: relative;
-    }
-    .card::after {
-      content: "💌";
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    /* 小氣球背景 */
-    .balloon {
-      position: absolute;
-      width: 20px;
-      height: 30px;
-      background: radial-gradient(circle at 50% 50%, #ff6b6b, #ff4757);
-      border-radius: 50% 50% 50% 50%;
-      opacity: 0.7;
-      animation: floatUp linear infinite;
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) rotate(0deg); }
-      100% { transform: translateY(-50px) rotate(360deg); }
-    }
-  </style>
 </head>
 <body>
 
@@ -113,47 +19,6 @@
 
   <div class="wall" id="wall"></div>
 
-  <script>
-    const wall = document.getElementById('wall');
-    const sendBtn = document.getElementById('sendBtn');
-    const nameInput = document.getElementById('name');
-    const messageInput = document.getElementById('message');
-
-    // 讀取 LocalStorage 留言
-    let messages = JSON.parse(localStorage.getItem('messages') || '[]');
-    messages.forEach(msg => addCard(msg.name, msg.message));
-
-    sendBtn.addEventListener('click', () => {
-      const name = nameInput.value.trim();
-      const message = messageInput.value.trim();
-      if (!name || !message) return alert('請填寫姓名與祝福內容');
-      
-      addCard(name, message);
-      messages.push({name, message});
-      localStorage.setItem('messages', JSON.stringify(messages));
-      
-      nameInput.value = '';
-      messageInput.value = '';
-    });
-
-    function addCard(name, message) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `<strong>${name}:</strong> <br>${message}`;
-      wall.prepend(card); // 新留言置頂
-      createBalloon();
-    }
-
-    // 生成小氣球動畫
-    function createBalloon() {
-      const balloon = document.createElement('div');
-      balloon.className = 'balloon';
-      balloon.style.left = Math.random() * window.innerWidth + 'px';
-      balloon.style.animationDuration = 3 + Math.random() * 3 + 's';
-      document.body.appendChild(balloon);
-      setTimeout(() => balloon.remove(), 6000);
-    }
-  </script>
-
+  <script src="js/app.js"></script>
 </body>
 </html>
